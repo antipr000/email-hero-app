@@ -1,14 +1,17 @@
 package com.example.emailhero.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class EmailTemplateProcessor {
-
+    private final Logger logger = LoggerFactory.getLogger(EmailTemplateProcessor.class);
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{\\{([^{}]+)}}");
 
     public boolean validTemplate(String template, Class<?> targetClass) {
@@ -16,6 +19,7 @@ public class EmailTemplateProcessor {
 
         while (matcher.find()) {
             String variableName = matcher.group(1);
+            logger.info("Matching var name {}", variableName);
 
             if (!isValidVariable(variableName, targetClass)) {
                 return false;
@@ -51,8 +55,10 @@ public class EmailTemplateProcessor {
     }
 
     private boolean isValidVariable(String variableName, Class<?> targetClass) {
-        Field []fields = targetClass.getFields();
+        Field []fields = targetClass.getDeclaredFields();
+        logger.info("Declared fields: {}", Arrays.toString(fields));
         for(Field field: fields) {
+            logger.info("Matching {} to {}", field.getName(), variableName);
             if (field.getName().equals(variableName)) {
                 return true;
             }

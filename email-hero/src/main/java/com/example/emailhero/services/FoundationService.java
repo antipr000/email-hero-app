@@ -6,6 +6,8 @@ import com.example.emailhero.exceptions.InvalidEmailTemplateException;
 import com.example.emailhero.models.NonProfit;
 import com.example.emailhero.repository.EmailTemplateRepository;
 import com.example.emailhero.repository.FoundationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class FoundationService {
+    private  final Logger logger = LoggerFactory.getLogger(FoundationService.class);
+
     @Autowired
     private FoundationRepository foundationRepository;
 
@@ -42,6 +46,7 @@ public class FoundationService {
 
     public void addEmailTemplate(String email, String template) throws InvalidEmailTemplateException {
         if (!emailTemplateProcessor.validTemplate(template, NonProfit.class)) {
+            logger.info("Template is not valid");
             throw new InvalidEmailTemplateException("Email template provided is not valid!");
         }
         emailTemplateRepository.addEmailTemplate(email, template);
@@ -52,10 +57,15 @@ public class FoundationService {
     }
 
     public void sendEmail(String email, SendEmailRequestDTO requestDTO) throws DataNotFoundException {
-        List<NonProfit> nonProfits = requestDTO.getNonProfits();
+        List<String> nonProfitEmails = requestDTO.getNonProfitEmails();
         String template = emailTemplateRepository.getEmailTemplate(email);
-        for (NonProfit nonProfit: nonProfits) {
-            emailService.sendEmail(template, nonProfit);
+        for (String nonProfitEmail: nonProfitEmails) {
+            try {
+                NonProfit nonProfit = foundationRepository.getNonProfitForFoundationByEmail(email, nonProfitEmail);
+                emailService.sendEmail(template, nonProfit);
+            } catch (DataNotFoundException e) {
+                logger.error("No non profit found for email: {}", nonProfitEmail);
+            }
         }
     }
 }

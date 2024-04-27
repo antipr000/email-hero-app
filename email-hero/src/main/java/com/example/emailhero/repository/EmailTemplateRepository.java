@@ -1,14 +1,21 @@
 package com.example.emailhero.repository;
 
 import com.example.emailhero.db.Database;
+import com.example.emailhero.db.InMemoryDatabaseImpl;
 import com.example.emailhero.exceptions.DataNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class EmailTemplateRepository {
-    @Autowired
-    private Database<String> emailTemplateDatabase;
+    Logger logger = LoggerFactory.getLogger(EmailTemplateRepository.class);
+    private final Database<String> emailTemplateDatabase;
+
+    public EmailTemplateRepository() {
+        logger.info("Called constructor of EmailTemplateRepository");
+        emailTemplateDatabase = new InMemoryDatabaseImpl<String>();
+    }
 
     public void addEmailTemplate(String foundationEmail, String newTemplate) {
         emailTemplateDatabase.put(foundationEmail, newTemplate);

@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
 public class FoundationController {
 
@@ -62,6 +63,7 @@ public class FoundationController {
     public void addEmailTemplate(@RequestBody AddEmailTemplateRequestDTO requestDTO,
                                  @RequestHeader("Email") String email) {
         try {
+            logger.info("Received add email template request: {}", requestDTO.getTemplate());
             foundationService.addEmailTemplate(email, requestDTO.getTemplate());
         } catch (InvalidEmailTemplateException e) {
             throw new ResponseStatusException(

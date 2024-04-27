@@ -5,19 +5,19 @@ import com.example.emailhero.models.NonProfit;
 import java.util.List;
 
 public class SendEmailRequestDTO {
-    private List<NonProfit> nonProfits;
+    private List<String> nonProfitEmails;
 
     public SendEmailRequestDTO() {}
 
-    public SendEmailRequestDTO(List<NonProfit> nonProfits) {
-        this.nonProfits = nonProfits;
+    public SendEmailRequestDTO(List<String> nonProfitEmails) {
+        this.nonProfitEmails = nonProfitEmails;
     }
 
-    public List<NonProfit> getNonProfits() {
-        return nonProfits;
+    public List<String> getNonProfitEmails() {
+        return nonProfitEmails;
     }
 
-    public void setNonProfits(List<NonProfit> nonProfits) {
-        this.nonProfits = nonProfits;
+    public void setNonProfitEmails(List<String> nonProfitEmails) {
+        this.nonProfitEmails = nonProfitEmails;
     }
 }
