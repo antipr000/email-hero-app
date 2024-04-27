@@ -1,9 +1,6 @@
 package com.example.emailhero.controllers;
 
-import com.example.emailhero.domain.AddEmailTemplateRequestDTO;
-import com.example.emailhero.domain.EmailTemplateResponseDTO;
-import com.example.emailhero.domain.LoginRequestDTO;
-import com.example.emailhero.domain.SendEmailRequestDTO;
+import com.example.emailhero.domain.*;
 import com.example.emailhero.exceptions.DataNotFoundException;
 import com.example.emailhero.exceptions.InvalidEmailTemplateException;
 import com.example.emailhero.models.NonProfit;
@@ -15,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(maxAge = 3600)
@@ -87,10 +85,11 @@ public class FoundationController {
     }
 
     @PostMapping("/sendemail")
-    public void sendEmail(@RequestBody SendEmailRequestDTO requestDTO,
+    public SendEmailResponseDTO sendEmail(@RequestBody SendEmailRequestDTO requestDTO,
                           @RequestHeader("Email") String email) {
         try {
-            foundationService.sendEmail(email, requestDTO);
+            ArrayList<String> failures = foundationService.sendEmail(email, requestDTO);
+            return new SendEmailResponseDTO(failures);
         } catch (DataNotFoundException e) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,

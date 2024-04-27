@@ -2,6 +2,7 @@ import { Box, AppBar, Toolbar, Button, Typography } from "@mui/material";
 import NonProfitGrid from "../components/NonProfitGrid";
 import { useState } from "react";
 import EmailTemplate from "../components/EmailTemplate";
+import PopupAlert from "../components/PopupAlert";
 
 const navItems = ['Home', 'Email Template'];
 
@@ -27,8 +28,11 @@ const HomePage = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Box sx={{ marginTop: "100px", height: "auto", display: "flex", justifyContent: "center" }}>
-                {tab === "Home" ? <NonProfitGrid /> : <EmailTemplate />}
+            <Box sx={{ marginTop: "100px" }}>
+                <PopupAlert />
+                <Box sx={{ marginTop: "10px", height: "auto", display: "flex", justifyContent: "center"}}>
+                    {tab === "Home" ? <NonProfitGrid /> : <EmailTemplate />}
+                </Box>
             </Box>
         </Box>
     )

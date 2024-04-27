@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddNonProfitOrganisationForm from "./AddNonProfitOrganisationForm";
 import { getAllNonProfits, sendEmail } from "../api";
 import { setNonProfitOrgs } from "../redux/nonProfit.slice";
+import { AlertStatus, showAlert } from "../redux/alert.slice";
 
 const columns = [
     { field: 'email', headerName: 'Email', width: 300 },
@@ -32,7 +33,29 @@ const NonProfitGrid = () => {
 
     const sendEmailToSelectedNonProfits = async () => {
         setLoading(true);
-        await sendEmail(selectedEmails);
+        const resp = await sendEmail(selectedEmails);
+        if (resp.success) {
+            if (resp.failureEmails.length > 0) {
+                const failureEmailsStr = resp.failureEmails.reduce((acc, val) => `${acc}, ${val}`, "");
+                dispatch(showAlert({
+                    show: true,
+                    status: AlertStatus.WARNING,
+                    message: `Failed for ${failureEmailsStr}`
+                }));
+            } else {
+                dispatch(showAlert({
+                    show: true,
+                    status: AlertStatus.SUCCESS,
+                    message: `Successfully sent!`
+                }));
+            }
+        } else {
+            dispatch(showAlert({
+                show: true,
+                status: AlertStatus.ERROR,
+                message: `Failed to send email!`
+            }));
+        }
         setLoading(false);
     }
 

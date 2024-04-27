@@ -59,10 +59,16 @@ async function addEmailTemplate(template) {
 
 async function sendEmail(emails) {
     try {
-        await instance.post("/sendemail",  { nonProfitEmails: emails });
-        return true;
+        const {data} = await instance.post("/sendemail",  { nonProfitEmails: emails });
+        return {
+            success: true,
+            failureEmails: data.failureEmails
+        }
     } catch (e) {
-        return false;
+        return {
+            success: false,
+            failureEmails: []
+        }
     }
 }
 

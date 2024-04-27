@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,16 +57,21 @@ public class FoundationService {
         return emailTemplateRepository.getEmailTemplate(email);
     }
 
-    public void sendEmail(String email, SendEmailRequestDTO requestDTO) throws DataNotFoundException {
+    public ArrayList<String> sendEmail(String email, SendEmailRequestDTO requestDTO)
+            throws DataNotFoundException {
         List<String> nonProfitEmails = requestDTO.getNonProfitEmails();
         String template = emailTemplateRepository.getEmailTemplate(email);
+        ArrayList<String> failureEmails = new ArrayList<>();
         for (String nonProfitEmail: nonProfitEmails) {
             try {
                 NonProfit nonProfit = foundationRepository.getNonProfitForFoundationByEmail(email, nonProfitEmail);
                 emailService.sendEmail(template, nonProfit);
             } catch (DataNotFoundException e) {
                 logger.error("No non profit found for email: {}", nonProfitEmail);
+                failureEmails.add(nonProfitEmail);
             }
         }
+
+        return failureEmails;
     }
 }
