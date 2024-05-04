@@ -1,8 +1,12 @@
 package com.example.emailhero.controllers;
 
 import com.example.emailhero.domain.*;
+import com.example.emailhero.exceptions.BaseException;
+import com.example.emailhero.exceptions.CsvReadException;
 import com.example.emailhero.exceptions.DataNotFoundException;
 import com.example.emailhero.exceptions.InvalidEmailTemplateException;
+import com.example.emailhero.models.EmailData;
+import com.example.emailhero.models.GrantRecord;
 import com.example.emailhero.models.NonProfit;
 import com.example.emailhero.services.FoundationService;
 import org.slf4j.Logger;
@@ -10,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -98,4 +103,45 @@ public class FoundationController {
         }
     }
 
+    @GetMapping("/emails")
+    public ArrayList<EmailData> getAllEmails(@RequestHeader("Email") String email) {
+        try{
+            return foundationService.getAllEmails(email);
+        } catch (DataNotFoundException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No foundation record found!"
+            );
+        }
+    }
+
+    @GetMapping("/grant/records")
+    public PaginatedResponse<GrantRecord> getAllGrantRecords(@RequestParam("pageOffset") int pageOffset,
+                                                             @RequestParam("numRecords") int numRecords,
+                                                             @RequestHeader("Email") String email) {
+        try {
+            return foundationService.getAllGrantRecords(email, pageOffset, numRecords);
+        } catch (BaseException e) {
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(
+                    e.getHttpStatusCode(),
+                    e.getMessage()
+            );
+        }
+    }
+
+    @PostMapping("/grant/file")
+    public void uploadGrantRecords(
+            @RequestHeader("Email") String email,
+            @RequestParam("file")MultipartFile file) {
+        try {
+            logger.info("File upload called for: {}", email);
+            foundationService.uploadCsvFile(email, file);
+        } catch (BaseException e) {
+            throw new ResponseStatusException(
+                    e.getHttpStatusCode(),
+                    e.getMessage()
+            );
+        }
+    }
 }

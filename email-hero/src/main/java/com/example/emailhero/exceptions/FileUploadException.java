@@ -2,13 +2,13 @@ package com.example.emailhero.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class DataNotFoundException extends BaseException {
-    public DataNotFoundException(String errorMessage) {
+public class FileUploadException extends BaseException {
+    public FileUploadException(String errorMessage) {
         super(errorMessage);
     }
 
     @Override
     public HttpStatus getHttpStatusCode() {
-        return HttpStatus.NOT_FOUND;
+        return HttpStatus.BAD_REQUEST;
     }
 }

@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddNonProfitOrganisationForm from "./AddNonProfitOrganisationForm";
-import { getAllNonProfits, sendEmail } from "../api";
+import { getAllEmails, getAllNonProfits, sendEmail } from "../api";
 import { setNonProfitOrgs } from "../redux/nonProfit.slice";
 import { AlertStatus, showAlert } from "../redux/alert.slice";
 
@@ -20,6 +20,15 @@ const NonProfitGrid = () => {
     const [selectedEmails, setSelectedEmails] = useState([]);
     const dispatch = useDispatch();
     const rows = nonProfits.map((data) => ({id: data.email, ...data}));
+
+    useEffect(() => {
+        const timer = setInterval(async () => {
+            const data = await getAllEmails();
+            console.log("All emails sent: ", data);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    })
 
     useEffect(() => {
         async function fetchAllNonProfitOrgs() {

@@ -25,3 +25,15 @@ public class EmailTemplateRepository {
         return emailTemplateDatabase.get(foundationEmail);
     }
 }
+
+/*
+*  foundationEmail: template
+*
+*  foundationEmail: TreeMap<String, Draft> drafts;
+*
+*  draft: { String template, String []emails, Date date } -> Delete on send
+*   getAllDrafts()
+*   addDraft(template, String[]nonProfitEmails) -> id: randomID(6); container.addKeyVal()
+*
+*   /{id}  -> store.get(foundationEmail).get(id)
+* */

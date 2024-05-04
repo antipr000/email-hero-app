@@ -72,4 +72,19 @@ async function sendEmail(emails) {
     }
 }
 
-export { login, addNonProfit, getAllNonProfits, getEmailTemplate, addEmailTemplate, sendEmail };
+async function getAllEmails() {
+    try {
+        const { data } = await instance.get('/emails');
+        return data;
+    } catch (e) {
+        return [];
+    }
+}
+
+export { login, 
+        addNonProfit, 
+        getAllNonProfits, 
+        getEmailTemplate, 
+        addEmailTemplate, 
+        sendEmail,
+        getAllEmails };
