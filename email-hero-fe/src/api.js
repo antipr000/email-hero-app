@@ -81,10 +81,42 @@ async function getAllEmails() {
     }
 }
 
+async function uploadCsvFile(file) {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        await instance.post('/grant/file', formData);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+async function getAllGrants(pageNumber, numRecords) {
+    try {
+        const { data } = await instance.get('/grant/records', {
+            params: {
+                pageOffset: pageNumber,
+                numRecords: numRecords
+            }
+        });
+        return {
+            ...data,
+            success: true
+        }
+    } catch (e) {
+        return {
+            success: false
+        }
+    }
+}
+
 export { login, 
         addNonProfit, 
         getAllNonProfits, 
         getEmailTemplate, 
         addEmailTemplate, 
         sendEmail,
-        getAllEmails };
+        getAllEmails,
+        uploadCsvFile,
+        getAllGrants };

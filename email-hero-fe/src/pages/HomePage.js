@@ -3,8 +3,20 @@ import NonProfitGrid from "../components/NonProfitGrid";
 import { useState } from "react";
 import EmailTemplate from "../components/EmailTemplate";
 import PopupAlert from "../components/PopupAlert";
+import GrantPage from "./GrantPage";
 
-const navItems = ['Home', 'Email Template'];
+const navItems = ['Home', 'Email Template', 'Grants'];
+
+const TabContent = ({ tab }) => {
+    switch(tab) {
+        case "Home":
+            return <NonProfitGrid />
+        case "Email Template":
+            return <EmailTemplate />
+        case "Grants":
+            return <GrantPage />
+    }
+}
 
 const HomePage = () => {
     const [tab, selectedTab] = useState("Home");
@@ -31,7 +43,7 @@ const HomePage = () => {
             <Box sx={{ marginTop: "100px" }}>
                 <PopupAlert />
                 <Box sx={{ marginTop: "10px", height: "auto", display: "flex", justifyContent: "center"}}>
-                    {tab === "Home" ? <NonProfitGrid /> : <EmailTemplate />}
+                    <TabContent tab={tab}/>
                 </Box>
             </Box>
         </Box>

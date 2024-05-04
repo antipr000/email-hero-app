@@ -24,12 +24,25 @@ public class GrantsRepository {
 
     public PaginatedResponse<GrantRecord> getGrantRecords(String foundationEmail,
                                                           int offset, int numRecords) throws DataNotFoundException {
-        List<GrantRecord> allRecords = store.get(foundationEmail);
-        List<GrantRecord> pageRecords = allRecords.subList(offset, offset + numRecords);
-        return new PaginatedResponse<>(
-                pageRecords,
-                offset + numRecords,
-                numRecords
-        );
+        int startIndex = offset * numRecords;
+        int endIndex = (offset + 1) * numRecords;
+        if (store.containsKey(foundationEmail)) {
+            List<GrantRecord> allRecords = store.get(foundationEmail);
+            List<GrantRecord> pageRecords = allRecords.subList(startIndex, Math.min(endIndex, allRecords.size()));
+            boolean hasNextPage = endIndex < allRecords.size() - 1;
+            return new PaginatedResponse<>(
+                    pageRecords,
+                    offset + 1,
+                    allRecords.size(),
+                    hasNextPage
+            );
+        } else {
+            return new PaginatedResponse<>(
+                    List.of(),
+                    offset,
+                    0,
+                    false
+            );
+        }
     }
 }

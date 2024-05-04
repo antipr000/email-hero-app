@@ -6,11 +6,13 @@ public class PaginatedResponse<T> {
     List<T> data;
     int nextPageOffset;
     int numRecords;
+    boolean hasNextPage;
 
-    public PaginatedResponse(List<T> data, int nextPageOffset, int numRecords) {
+    public PaginatedResponse(List<T> data, int nextPageOffset, int numRecords, boolean hasNextPage) {
         this.data = data;
         this.nextPageOffset = nextPageOffset;
         this.numRecords = numRecords;
+        this.hasNextPage = hasNextPage;
     }
 
     public List<T> getData() {
@@ -23,6 +25,14 @@ public class PaginatedResponse<T> {
 
     public int getNextPageOffset() {
         return nextPageOffset;
+    }
+
+    public boolean getHasNextPage() {
+        return hasNextPage;
+    }
+
+    public void setHasNextPage(boolean hasNextPage) {
+        this.hasNextPage = hasNextPage;
     }
 
     public void setNextPageOffset(int nextPageOffset) {
